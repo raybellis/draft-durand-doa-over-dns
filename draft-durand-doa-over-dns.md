@@ -1,6 +1,6 @@
 ---
 title: DOA over DNS
-docname: draft-durand-doa-over-dns-02
+docname: draft-durand-doa-over-dns-03
 
 ipr: trust200902
 area: Internet
@@ -197,8 +197,9 @@ range 0 - 255.
 
 The DOA-MEDIA-TYPE field is presented as a single &lt;character-string&gt;.
 
-The DOA-DATA is presented as Base64 encoded data {{!RFC3548}}.  White
-space is permitted within the Base64 data.
+The DOA-DATA is presented as Base64 encoded data {{!RFC3548}} unless the
+DOA-DATA is empty in which case it is presented as a single dash
+character ("-", ASCII 45).  White space is permitted within Base64 data.
 
 # Security Considerations {#security}
 

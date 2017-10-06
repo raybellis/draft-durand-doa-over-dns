@@ -197,7 +197,7 @@ range 0 - 255.
 
 The DOA-MEDIA-TYPE field is presented as a single &lt;character-string&gt;.
 
-The DOA-DATA is presented as Base64 encoded data {{!RFC3548}} unless the
+The DOA-DATA is presented as Base64 encoded data {{!RFC4648}} unless the
 DOA-DATA is empty in which case it is presented as a single dash
 character ("-", ASCII 45).  White space is permitted within Base64 data.
 

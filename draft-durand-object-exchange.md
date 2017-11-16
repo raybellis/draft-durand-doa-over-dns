@@ -1,6 +1,6 @@
 ---
-title: DOA over DNS
-docname: draft-durand-doa-over-dns-03
+title: DNS Object Exchange
+docname: draft-durand-object-exchange-00
 
 ipr: trust200902
 area: Internet
@@ -44,30 +44,25 @@ normative:
       org: IANA
     title: SMI Network Management Private Enterprise Codes Registry
     target: https://www.iana.org/assignments/enterprise-numbers/enterprise-numbers
-informative:
-  ITU-X.1255:
-    author:
-      org: ITU
-    title: Framework for discovery of identity management information
-    target: http://www.itu.int/rec/T-REC-X.1255-201309-I
 
 --- abstract
 
 Abstract
 
-This document defines a DOA RR type to implement the Digital Object
-Architecture over DNS.
+This document defines an RR type to implement an architecture for the
+exchange of digitial objects using persistent identifiers stored within
+the DNS.
 
 --- middle
 
 # Introduction
 
-This document defines an RR type to implement an architecture similar to
-the Digital Object Architecture {{ITU-X.1255}} within the DNS. Each DOA
-RR contains an object type that might be opaque and private to the
-producer and the consumer of the data and either the data (if small
-enough to fit in the RR) or a pointer on how to retrieve the actual
-data.
+This document defines an RR type ("OX") to implement an architecture for
+the exchange of digital objects using persistent identifiers stored
+within the DNS.  DNS. Each OX RR contains an object type that might be
+opaque and private to the producer and the consumer of the data and
+either the data (if small enough to fit in the RR) or a pointer on how
+to retrieve the actual data.
 
 # Terminology
 
@@ -77,154 +72,154 @@ The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
 {{!RFC2119}} {{!RFC8174}} when, and only when, they appear in all
 capitals, as shown here.
 
-# The DOA Resource Record
+# The OX Resource Record
 
 ## Description
 
-The Type value for the DOA RR is TBD.  The DOA RR is class independent.
+The Type value for the OX RR is TBD.  The OX RR is class independent.
 No special processing is required within DNS servers or libraries.
 
 The RDATA of the resource record comprises of five fields:
-DOA-ENTERPRISE, DOA-TYPE, DOA-MEDIA-TYPE, DOA-LOCATION and DOA-DATA.
+OX-ENTERPRISE, OX-TYPE, OX-MEDIA-TYPE, OX-LOCATION and OX-DATA.
 
 ### Enterprise and Type fields
 
-The DOA-ENTERPRISE and DOA-TYPE fields are combined to indicate the
-semantic type of the DOA record being represented by the RR.  That
+The OX-ENTERPRISE and OX-TYPE fields are combined to indicate the
+semantic type of the OX record being represented by the RR.  That
 semantic is private to the producer of data hosted on an authoritative
 DNS server and the application software using a DNS stub resolver to
 retrieve it.
 
-The DOA-ENTERPRISE field uses values as specified in the IANA SMI
+The OX-ENTERPRISE field uses values as specified in the IANA SMI
 Network Management Private Enterprise Codes Registry
 {{IANA-ENTERPRISE}}.  An exception to that is that the reserved value of
-zero (0) is used to indicate that the the DOA-ENTERPRISE is not set.
+zero (0) is used to indicate that the the OX-ENTERPRISE is not set.
 
-Some commonly used values of DOA-TYPE are registered in the IANA DOA
-Type Registry {{doatype}}, others are privately defined.  As those
+Some commonly used values of OX-TYPE are registered in the IANA OX
+Type Registry {{oxtype}}, others are privately defined.  As those
 private types might be used in cross-organization systems, use of the
-DOA-ENTERPRISE field is RECOMMENDED to disambiguate types.
+OX-ENTERPRISE field is RECOMMENDED to disambiguate types.
 
 ### Location field
 
-The DOA-LOCATION signals how the DOA-DATA field should be interpreted
-using the values specified in the DOA Location Type Registry
-{{doalocation}}.
+The OX-LOCATION signals how the OX-DATA field should be interpreted
+using the values specified in the OX Location Type Registry
+{{oxlocation}}.
 
 The value 0 is reserved.
 
-For the value 1 ("Local"), the DOA-DATA contains the actual DOA object.
+For the value 1 ("Local"), the OX-DATA contains the actual OX object.
 
-For the value 2 ("URI") the DOA-DATA contains a UTF-8 encoded string
-representing the URI from which the DOA object can be obtained.
+For the value 2 ("URI") the OX-DATA contains a UTF-8 encoded string
+representing the URI from which the OX object can be obtained.
 
-For the value 3 ("HDL") the DOA-DATA contains a UTF-8 encoded string
+For the value 3 ("HDL") the OX-DATA contains a UTF-8 encoded string
 representing the handle from the Handle System {{?RFC3650}}  from which
-the DOA object can be obtained.
+the OX object can be obtained.
 
 Other values might be defined in the future, for example for NFS, LDAP,
 etc...
 
-DNS software implementing the DOA RR type MUST NOT drop or otherwise
-refuse to handle the DOA RRs containing an unknown or unsupported
-DOA-location and MUST treat the DOA-DATA portion of the RR as an
+DNS software implementing the OX RR type MUST NOT drop or otherwise
+refuse to handle the OX RRs containing an unknown or unsupported
+OX-LOCATION and MUST treat the OX-DATA portion of the RR as an
 abstract opaque field.
 
 ### Media Type
 
-The DOA-MEDIA-TYPE field contains the Internet media type {{!RFC6838}}
-for the DOA object represented by this record.
+The OX-MEDIA-TYPE field contains the Internet media type {{!RFC6838}}
+for the OX object represented by this record.
 
 If a non-Local object is retrieved over a protocol that supports
 inclusion of a media type value (e.g. an HTTP Content-Type header) then
 the client MUST use that value (if supplied) in preference to any value
-specified inside this resource record. In such case, the DOA-MEDIA-TYPE
+specified inside this resource record. In such case, the OX-MEDIA-TYPE
 MAY be set to NULL, length 0.
 
-### Data {#doadata}
+### Data {#oxdata}
 
-The DOA-DATA field contains either the object's data, or some form of
+The OX-DATA field contains either the object's data, or some form of
 reference specifying from where the data can be obtained, per the
-DOA-LOCATION field above.
+OX-LOCATION field above.
 
-## DOA RDATA Wire Format
+## OX RDATA Wire Format
 
         +---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
      0: |                                                               |
-        |                        DOA-ENTERPRISE                         |
+        |                         OX-ENTERPRISE                         |
         |                                                               |
         +---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
      4: |                                                               |
-        |                           DOA-TYPE                            |
+        |                            OX-TYPE                            |
         |                                                               |
         +---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
-     8: |         DOA-LOCATION          |         DOA-MEDIA-TYPE        /
+     8: |          OX-LOCATION          |          OX-MEDIA-TYPE        /
         +---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
     10: /                                                               /
-        /                  DOA-MEDIA-TYPE (continued)                   /
+        /                   OX-MEDIA-TYPE (continued)                   /
         /                                                               /
         +---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
         /                                                               /
-        /                           DOA-DATA                            /
+        /                            OX-DATA                            /
         /                                                               /
         +---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
 
-DOA-ENTERPRISE: a 32-bit unsigned integer in network order.
+OX-ENTERPRISE: a 32-bit unsigned integer in network order.
 
-DOA-TYPE: a 32-bit unsigned integer in network order.
+OX-TYPE: a 32-bit unsigned integer in network order.
 
-DOA-LOCATION: an 8-bit unsigned integer.
+OX-LOCATION: an 8-bit unsigned integer.
 
-DOA-MEDIA-TYPE: A &lt;character-string&gt; (see {{!RFC1035}}).  The
+OX-MEDIA-TYPE: A &lt;character-string&gt; (see {{!RFC1035}}).  The
 first octet of the &lt;character-string&gt; contains the number of
 characters to follow.
 
-DOA-DATA: A variable length blob of binary data.  The length of the
-DOA-DATA is not contained within the wire format of the RR and has to be
+OX-DATA: A variable length blob of binary data.  The length of the
+OX-DATA is not contained within the wire format of the RR and has to be
 computed from the RDLENGTH of the entire RR once other fields have been
 taken into account.
 
-## DOA RDATA Presentation Format
+## OX RDATA Presentation Format
 
-The DOA-ENTERPRISE field is presented as an unsigned 32-bit decimal integer with
+The OX-ENTERPRISE field is presented as an unsigned 32-bit decimal integer with
 range 0 - 4,294,967,295.
 
-The DOA-TYPE field is presented as an unsigned 32-bit decimal integer with
+The OX-TYPE field is presented as an unsigned 32-bit decimal integer with
 range 0 - 4,294,967,295.
 
-The DOA-LOCATION field is presented as an unsigned 8-bit decimal integer with
+The OX-LOCATION field is presented as an unsigned 8-bit decimal integer with
 range 0 - 255.
 
-The DOA-MEDIA-TYPE field is presented as a single &lt;character-string&gt;.
+The OX-MEDIA-TYPE field is presented as a single &lt;character-string&gt;.
 
-The DOA-DATA is presented as Base64 encoded data {{!RFC4648}} unless the
-DOA-DATA is empty in which case it is presented as a single dash
+The OX-DATA is presented as Base64 encoded data {{!RFC4648}} unless the
+OX-DATA is empty in which case it is presented as a single dash
 character ("-", ASCII 45).  White space is permitted within Base64 data.
 
 # Security Considerations {#security}
 
 The use of DNSSEC is encouraged to protect the integrity of the data
-contained in the DOA RR type.
+contained in the OX RR type.
 
 # Privacy Considerations {#privacy}
 
-Personally identifiable information (PII) data appearing in the DOA-DATA
+Personally identifiable information (PII) data appearing in the OX-DATA
 field SHOULD be encrypted.
 
 # Operational consideration
 
-Some DOA records might contain large data that is only of interest to a
+Some OX records might contain large data that is only of interest to a
 single party, as such, caching those records does not provide much
 benefits and could be considered a denial of service attack on the
 caching resolver infrastructure. It is thus RECOMMENDED that the TTL
-associated with large DOA RRs be set as small as possible to avoid
+associated with large OX RRs be set as small as possible to avoid
 caching.
 
 # IANA Considerations {#iana}
 
-## DOA Type Registry {#doatype}
+## OX Type Registry {#oxtype}
 
-IANA are requested to create the DOA Type Registry with initial contents as follows:
+IANA are requested to create the OX Type Registry with initial contents as follows:
 
 | Value | Name | Specification |
 |--:|------|------|
@@ -239,9 +234,9 @@ IANA are requested to create the DOA Type Registry with initial contents as foll
 
 Assignments in the 1-99,999 range in this registry require Expert Review.
 
-## DOA Location Type Registry {#doalocation}
+## OX Location Type Registry {#oxlocation}
 
-IANA are requested to create the DOA Location Type Registry with initial
+IANA are requested to create the OX Location Type Registry with initial
 contents as follows:
 
 | Value | Location | Specification |
